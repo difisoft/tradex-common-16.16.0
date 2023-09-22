@@ -1,0 +1,1 @@
+{"version":3,"file":"ServiceRegistration.js","sourceRoot":"","sources":["../../../../src/modules/service-registration/ServiceRegistration.ts"],"names":[],"mappings":";;AAAA,MAAqB,mBAAmB;IAKtC,YAAY,OAAe,EAAE,MAAc,EAAE,WAAmB;QAC9D,IAAI,CAAC,OAAO,GAAG,OAAO,CAAC;QACvB,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;QACrB,IAAI,CAAC,WAAW,GAAG,WAAW,CAAC;IACjC,CAAC;CACF;AAVD,sCAUC;AAAA,CAAC"}

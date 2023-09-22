@@ -1,0 +1,1 @@
+{"version":3,"file":"ForwardError.js","sourceRoot":"","sources":["../../../../src/modules/errors/ForwardError.ts"],"names":[],"mappings":";;;AAEA,MAAa,YAAa,SAAQ,KAAK;IAIrC,YAAY,MAAe;QACzB,KAAK,EAAE,CAAC;QACR,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;QACrB,IAAI,CAAC,cAAc,GAAG,IAAI,CAAC;IAC7B,CAAC;CACF;AATD,oCASC"}

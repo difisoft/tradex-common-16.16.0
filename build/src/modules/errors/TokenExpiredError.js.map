@@ -1,0 +1,1 @@
+{"version":3,"file":"TokenExpiredError.js","sourceRoot":"","sources":["../../../../src/modules/errors/TokenExpiredError.ts"],"names":[],"mappings":";;;AAAA,iDAA0C;AAE7B,QAAA,wBAAwB,GAAG,eAAe,CAAC;AAExD,MAAqB,iBAAkB,SAAQ,sBAAY;IACzD,YAAY,MAAY;QACtB,KAAK,CAAC,gCAAwB,EAAE,SAAS,EAAE,MAAM,CAAC,CAAC;IACrD,CAAC;CACF;AAJD,oCAIC"}

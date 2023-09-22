@@ -1,0 +1,1 @@
+mklink /D node_modules\tradex-common C:\Users\tuanhiep\Documents\tradex\tradex-common-nodejs

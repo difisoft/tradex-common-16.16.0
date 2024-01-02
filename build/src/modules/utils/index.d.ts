@@ -1,5 +1,6 @@
 /// <reference types="rx-core" />
 /// <reference types="rx-lite" />
+/// <reference types="i18next" />
 import { onError, onNext, transform, transformAsync, transformError, transformPromise, transformPromiseAsync, transformSingle, transformSingleAsync, transformSinglePromise } from "./rx";
 import { createFailFromError, createFailValidation, createSuccessValidation, validate, Validate, validateEmail, validatePassword } from "./validation";
 import { setObjKey } from "./ObjectUtils";
@@ -44,6 +45,7 @@ declare const _default: {
     getLanguageCode: (acceptLanguageHeader: string) => string;
     initI18n: (msNames: string, namespaceList: string[], requestTopic?: string, uri?: string) => void;
     initI18nInternal: (msNames: string, namespaceList: string[], requestTopic?: string, uri?: string) => void;
+    initByOptions: (initOption: import("i18next").InitOptions) => void;
     getI18nInstance: () => any;
     translateErrorMessage: (errorObject: import("../models").IStatus, lang: string) => import("../models").IStatus;
     initTemplateResource: (msNames: string, requestTopic?: string, uri?: string) => void;

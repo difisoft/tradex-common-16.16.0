@@ -22,14 +22,14 @@ const init = (msNames: string, namespaceList: string[], requestTopic: string = '
   i18n
     .use(Backend)
 
-  Kafka.getInstance().sendRequest(
+  Kafka.getInstance().sendRequestAsync(
     uuid(),
     requestTopic,
     uri,
     {
       msNames: msNames
     })
-    .subscribe((message: Kafka.IMessage) => {
+    .then((message: Kafka.IMessage) => {
       if (message.data.status != null) {
         Logger.error(message.data.status);
       } else {
@@ -42,16 +42,18 @@ const init = (msNames: string, namespaceList: string[], requestTopic: string = '
             saveMissing: true,
             backend: {
               loadPath: (lngs: string, namespaces: string) => {
-                for (let i = 0; i < data.length; i++) {
-                  const element = data[i];
-                  if (element.lang === lngs[0]) {
-                    for (let j = 0; j < element.files.length; j++) {
-                      const file = element.files[j];
-                      if (file.namespace === namespaces[0]) {
-                        if (element.lang === 'en') {
-                          defaultResources[namespaces[0]] = file.url;
+                if (data != null && Array.isArray(data)) {
+                  for (let i = 0; i < data.length; i++) {
+                    const element = data[i];
+                    if (element.lang === lngs[0] && element.files != null) {
+                      for (let j = 0; j < element.files.length; j++) {
+                        const file = element.files[j];
+                        if (file.namespace === namespaces[0]) {
+                          if (element.lang === 'en') {
+                            defaultResources[namespaces[0]] = file.url;
+                          }
+                          return file.url;
                         }
-                        return file.url;
                       }
                     }
                   }
@@ -67,32 +69,38 @@ const init = (msNames: string, namespaceList: string[], requestTopic: string = '
           });
       }
 
-    });
+    }).catch((err: unknown) => Logger.error("fail to init i18n", err));
+}
+
+const initByOptions = (initOption: i18n.InitOptions) => {
+  i18n.init(initOption);
 }
 
 const initInternal = (msNames: string, namespaceList: string[], requestTopic: string = 'configuration', uri: string = '/api/v1/locale/internal'): void => {
-  Kafka.getInstance().sendRequest(
+  Kafka.getInstance().sendRequestAsync(
     uuid(),
     requestTopic,
     uri,
     {
       msNames: msNames
     })
-    .subscribe((message: Kafka.IMessage) => {
+    .then((message: Kafka.IMessage) => {
       if (message.data.status != null) {
         Logger.error(message.data.status);
         Utils.initI18nInternal(msNames, namespaceList, requestTopic, uri);
       } else {
         const data = message.data.data;
         const resources = {};
-
-        for (let i = 0; i < data.length; i++) {
-          const element = data[i];
-          resources[element.lang] = {};
-
-          for (let j = 0; j < element.files.length; j++) {
-            const file = element.files[j];
-            resources[element.lang][file.namespace] = file.content;
+        if (data != null && Array.isArray(data)) {
+          for (let i = 0; i < data.length; i++) {
+            const element = data[i];
+            resources[element.lang] = {};
+            if (element.files != null) {
+              for (let j = 0; j < element.files.length; j++) {
+                const file = element.files[j];
+                resources[element.lang][file.namespace] = file.content;
+              }
+            }
           }
         }
 
@@ -109,7 +117,7 @@ const initInternal = (msNames: string, namespaceList: string[], requestTopic: st
           });
       }
 
-    });
+    }).catch((err: unknown) => Logger.error("fail to init i18nInternal", err));
 }
 
 const getInstance = (): any => {
@@ -170,4 +178,4 @@ const translateErrorMessage = (errorObject: IStatus, lang: string): IStatus => {
   return errorResponse;
 }
 
-export { getLanguageCode, init, initInternal, getInstance, translateErrorMessage }
+export { getLanguageCode, init, initInternal, initByOptions, getInstance, translateErrorMessage }

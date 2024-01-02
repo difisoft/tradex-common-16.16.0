@@ -56,6 +56,7 @@ import {
   getLanguageCode,
   init as initI18n,
   initInternal as initI18nInternal,
+  initByOptions,
   translateErrorMessage
 } from "./locale";
 import { compileTemplate, getTemplateResources, init as initTemplateResource } from "./template";
@@ -124,6 +125,7 @@ export default {
   getLanguageCode,
   initI18n,
   initI18nInternal,
+  initByOptions,
   getI18nInstance,
   translateErrorMessage,
   initTemplateResource,

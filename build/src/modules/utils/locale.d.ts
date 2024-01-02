@@ -1,8 +1,10 @@
+import * as i18n from 'i18next';
 import 'isomorphic-fetch';
 import { IStatus } from '../models';
 declare const getLanguageCode: (acceptLanguageHeader: string) => string;
 declare const init: (msNames: string, namespaceList: string[], requestTopic?: string, uri?: string) => void;
+declare const initByOptions: (initOption: i18n.InitOptions) => void;
 declare const initInternal: (msNames: string, namespaceList: string[], requestTopic?: string, uri?: string) => void;
 declare const getInstance: () => any;
 declare const translateErrorMessage: (errorObject: IStatus, lang: string) => IStatus;
-export { getLanguageCode, init, initInternal, getInstance, translateErrorMessage };
+export { getLanguageCode, init, initInternal, initByOptions, getInstance, translateErrorMessage };

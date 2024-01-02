@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.translateErrorMessage = exports.getInstance = exports.initInternal = exports.init = exports.getLanguageCode = void 0;
+exports.translateErrorMessage = exports.getInstance = exports.initByOptions = exports.initInternal = exports.init = exports.getLanguageCode = void 0;
 const acceptLanguage = require("accept-language");
 const i18n = require("i18next");
 const uuid_1 = require("uuid");
@@ -21,10 +21,10 @@ const defaultResources = {};
 const init = (msNames, namespaceList, requestTopic = 'configuration', uri = '/api/v1/locale') => {
     i18n
         .use(i18next_fetch_backend_1.default);
-    __1.Kafka.getInstance().sendRequest(uuid_1.v4(), requestTopic, uri, {
+    __1.Kafka.getInstance().sendRequestAsync(uuid_1.v4(), requestTopic, uri, {
         msNames: msNames
     })
-        .subscribe((message) => {
+        .then((message) => {
         if (message.data.status != null) {
             __1.Logger.error(message.data.status);
         }
@@ -37,16 +37,18 @@ const init = (msNames, namespaceList, requestTopic = 'configuration', uri = '/ap
                 saveMissing: true,
                 backend: {
                     loadPath: (lngs, namespaces) => {
-                        for (let i = 0; i < data.length; i++) {
-                            const element = data[i];
-                            if (element.lang === lngs[0]) {
-                                for (let j = 0; j < element.files.length; j++) {
-                                    const file = element.files[j];
-                                    if (file.namespace === namespaces[0]) {
-                                        if (element.lang === 'en') {
-                                            defaultResources[namespaces[0]] = file.url;
+                        if (data != null && Array.isArray(data)) {
+                            for (let i = 0; i < data.length; i++) {
+                                const element = data[i];
+                                if (element.lang === lngs[0] && element.files != null) {
+                                    for (let j = 0; j < element.files.length; j++) {
+                                        const file = element.files[j];
+                                        if (file.namespace === namespaces[0]) {
+                                            if (element.lang === 'en') {
+                                                defaultResources[namespaces[0]] = file.url;
+                                            }
+                                            return file.url;
                                         }
-                                        return file.url;
                                     }
                                 }
                             }
@@ -59,14 +61,18 @@ const init = (msNames, namespaceList, requestTopic = 'configuration', uri = '/ap
                 fallbackNS: namespaceList.slice(1)
             });
         }
-    });
+    }).catch((err) => __1.Logger.error("fail to init i18n", err));
 };
 exports.init = init;
+const initByOptions = (initOption) => {
+    i18n.init(initOption);
+};
+exports.initByOptions = initByOptions;
 const initInternal = (msNames, namespaceList, requestTopic = 'configuration', uri = '/api/v1/locale/internal') => {
-    __1.Kafka.getInstance().sendRequest(uuid_1.v4(), requestTopic, uri, {
+    __1.Kafka.getInstance().sendRequestAsync(uuid_1.v4(), requestTopic, uri, {
         msNames: msNames
     })
-        .subscribe((message) => {
+        .then((message) => {
         if (message.data.status != null) {
             __1.Logger.error(message.data.status);
             __1.Utils.initI18nInternal(msNames, namespaceList, requestTopic, uri);
@@ -74,12 +80,16 @@ const initInternal = (msNames, namespaceList, requestTopic = 'configuration', ur
         else {
             const data = message.data.data;
             const resources = {};
-            for (let i = 0; i < data.length; i++) {
-                const element = data[i];
-                resources[element.lang] = {};
-                for (let j = 0; j < element.files.length; j++) {
-                    const file = element.files[j];
-                    resources[element.lang][file.namespace] = file.content;
+            if (data != null && Array.isArray(data)) {
+                for (let i = 0; i < data.length; i++) {
+                    const element = data[i];
+                    resources[element.lang] = {};
+                    if (element.files != null) {
+                        for (let j = 0; j < element.files.length; j++) {
+                            const file = element.files[j];
+                            resources[element.lang][file.namespace] = file.content;
+                        }
+                    }
                 }
             }
             i18n
@@ -93,7 +103,7 @@ const initInternal = (msNames, namespaceList, requestTopic = 'configuration', ur
                 fallbackNS: namespaceList.slice(1)
             });
         }
-    });
+    }).catch((err) => __1.Logger.error("fail to init i18nInternal", err));
 };
 exports.initInternal = initInternal;
 const getInstance = () => {

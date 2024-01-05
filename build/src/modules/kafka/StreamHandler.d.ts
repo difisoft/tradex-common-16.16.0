@@ -11,7 +11,6 @@ interface IKafkaMessage {
     timestamp: number;
 }
 declare class StreamHandler {
-    private hasError;
     private stream;
     constructor(conf: IConf, options: ConsumerTopicConfig, topics: string[], dataHandler: (data: IKafkaMessage, handler: StreamHandler) => void, topicConf?: any, readyCallback?: () => void);
     close(): void;

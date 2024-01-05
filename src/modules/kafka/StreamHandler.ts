@@ -1,6 +1,7 @@
 import { ConsumerStream, ConsumerTopicConfig, createReadStream } from 'node-rdkafka';
 import { logger } from '../log';
 import { IConf } from "./types";
+import { isNumber } from 'util';
 
 interface IKafkaMessage {
   value: Buffer;
@@ -13,7 +14,6 @@ interface IKafkaMessage {
 }
 
 class StreamHandler {
-  private hasError: boolean;
   private stream: ConsumerStream;
 
   constructor(conf: IConf, options: ConsumerTopicConfig, topics: string[]
@@ -29,28 +29,25 @@ class StreamHandler {
       }, ...options
     };
 
-    this.hasError = false;
     this.stream = createReadStream(ops, topicConf, {
       topics: topics
     });
 
-    if (readyCallback) {
-      this.stream.consumer.on('ready', readyCallback);
-    }
+    this.stream.consumer.on('ready', () => {
+      if (readyCallback != null) {
+        readyCallback();
+      }
+    });
 
     this.stream.on('error', (err: any) => {
-      logger.error('error on kafka', topics, err);
-      this.hasError = true;
-      setTimeout(() => {
-        if (this.hasError) {
-          logger.logError('error flag still on. preparing to exit in 2 seconds', topics);
-          setTimeout(() => process.exit(1), 2000);
-        }
-      }, 15000)
+      if (!(err.code != null && isNumber(err.code) && err.code > 0)) {
+        logger.error('a fatal error on kafka consumer', topics, 'code:', err.code, 'isFatal: ', err.isFatal, 'retriable: ', err.isRetriable, 'origin: ', err.origin, err);
+      } else {
+        logger.warn('an error on kafka consunmer', topics, err.message, 'code:', err.code, 'isFatal: ', err.isFatal, 'retriable: ', err.isRetriable, 'origin: ', err.origin);
+      }
     });
 
     this.stream.on('data', (data: any) => {
-      this.hasError = false;
       dataHandler(<IKafkaMessage>data, this);
     });
 

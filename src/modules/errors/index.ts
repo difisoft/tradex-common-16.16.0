@@ -10,6 +10,7 @@ import InvalidFieldValueError from './InvalidFieldValueError';
 import { ForwardError } from './ForwardError';
 import TokenExpiredError from './TokenExpiredError';
 import { TimeoutError } from './TimeoutError';
+import NoForwardResponseError from './NoForwardResponseError';
 
 export const EMAIL_VALIDATION_FAILED = 'EMAIL_VALIDATION_ERROR';
 export const TEMPLATE_LOAD_FAILED = 'TEMPLATE_LOAD_FAILED';
@@ -26,5 +27,6 @@ export {
   ForwardError,
   TokenExpiredError,
   TimeoutError,
-  createFromStatus
+  createFromStatus,
+  NoForwardResponseError
 }

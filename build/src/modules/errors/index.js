@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createFromStatus = exports.TimeoutError = exports.TokenExpiredError = exports.ForwardError = exports.InvalidFieldValueError = exports.InvalidIdSecretError = exports.InvalidParameterError = exports.AlreadyExistedError = exports.ObjectNotFoundError = exports.SystemError = exports.UriNotFound = exports.GeneralError = exports.FieldRequiredError = exports.TEMPLATE_LOAD_FAILED = exports.EMAIL_VALIDATION_FAILED = void 0;
+exports.NoForwardResponseError = exports.createFromStatus = exports.TimeoutError = exports.TokenExpiredError = exports.ForwardError = exports.InvalidFieldValueError = exports.InvalidIdSecretError = exports.InvalidParameterError = exports.AlreadyExistedError = exports.ObjectNotFoundError = exports.SystemError = exports.UriNotFound = exports.GeneralError = exports.FieldRequiredError = exports.TEMPLATE_LOAD_FAILED = exports.EMAIL_VALIDATION_FAILED = void 0;
 const FieldRequiredError_1 = require("./FieldRequiredError");
 exports.FieldRequiredError = FieldRequiredError_1.default;
 const GeneralError_1 = require("./GeneralError");
@@ -26,6 +26,8 @@ const TokenExpiredError_1 = require("./TokenExpiredError");
 exports.TokenExpiredError = TokenExpiredError_1.default;
 const TimeoutError_1 = require("./TimeoutError");
 Object.defineProperty(exports, "TimeoutError", { enumerable: true, get: function () { return TimeoutError_1.TimeoutError; } });
+const NoForwardResponseError_1 = require("./NoForwardResponseError");
+exports.NoForwardResponseError = NoForwardResponseError_1.default;
 exports.EMAIL_VALIDATION_FAILED = 'EMAIL_VALIDATION_ERROR';
 exports.TEMPLATE_LOAD_FAILED = 'TEMPLATE_LOAD_FAILED';
 //# sourceMappingURL=index.js.map

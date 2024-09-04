@@ -8,6 +8,7 @@ import IResponse, { createFailResponse } from "../models/IResponse";
 import { ForwardError } from "../errors";
 import { Logger } from '../..';
 import { IKafkaMessage } from './StreamHandler';
+import NoForwardResponseError from "../errors/NoForwardResponseError";
 
 declare type HandleResult = Observable<any> | Promise<any> | boolean;
 declare type Handle = (msg: IMessage, originalMessage?: IKafkaMessage) => HandleResult;
@@ -91,6 +92,9 @@ class MessageHandler {
         const handleError = (err: Error) => {
           logger.logError(`error while processing request ${msg.transactionId} ${msg.messageId} ${msg.uri}`, err);
           delete this.activeRequestMap[msg.msgHandlerUniqueId];
+          if (err instanceof NoForwardResponseError) {
+            return;
+          }
           if (shouldResponse) {
             this.sendRequest.sendResponse(
               msg.transactionId,

@@ -6,6 +6,7 @@ const SendRequest_1 = require("./SendRequest");
 const UriNotFound_1 = require("../errors/UriNotFound");
 const IResponse_1 = require("../models/IResponse");
 const __1 = require("../..");
+const NoForwardResponseError_1 = require("../errors/NoForwardResponseError");
 class MessageHandler {
     constructor(sendRequest = null, timeoutinMs) {
         this.sendRequest = sendRequest;
@@ -61,6 +62,9 @@ class MessageHandler {
                     const handleError = (err) => {
                         log_1.logger.logError(`error while processing request ${msg.transactionId} ${msg.messageId} ${msg.uri}`, err);
                         delete this.activeRequestMap[msg.msgHandlerUniqueId];
+                        if (err instanceof NoForwardResponseError_1.default) {
+                            return;
+                        }
                         if (shouldResponse) {
                             this.sendRequest.sendResponse(msg.transactionId, msg.messageId, msg.responseDestination.topic, msg.responseDestination.uri, this.getErrorMessage(err));
                         }
